@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 import db from '../utils/db.json';
 import Widget from '../components/Widget';
+import Footer from '../components/Footer';
+import QuizBackground from '../components/QuizBackground';
+import GitHubCorner from '../components/GitHubCorner';
 
 const BackgroundImage = styled.div`
   background-image: url(${db.bg});
@@ -22,7 +25,7 @@ const QuizContainer = styled.div`
 
 export default function Home() {
   return (
-    <BackgroundImage>
+    <QuizBackground backgroundImage={db.bg}>
       <QuizContainer>
         <Widget>
           <Widget.Header>
@@ -41,7 +44,9 @@ export default function Home() {
             <p>Lorem ipsum dolor</p>
           </Widget.Content>
         </Widget>
+        <Footer/>
       </QuizContainer>
-    </BackgroundImage>
+      <GitHubCorner projectUrl={db.github} />
+    </QuizBackground>
   )
 }
