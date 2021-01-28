@@ -3,7 +3,30 @@
   "title": "Quiz Laravel",
   "description": "Descrição do Quiz",
   "questions": [
-
+    {
+      "image": "https://raw.githubusercontent.com/MaruanBO/MaruanBO/master/assets/laravel-wrapper.gif",
+      "title": "Para que serve as migrations no Laravel?",
+      "description": "Pergunta de nível básico",
+      "answer": 1,
+      "alternatives": [
+        "Criar rotas",
+        "Manipular banco de dados",
+        "Criar models",
+        "Criar Controllers"
+      ]
+    },
+    {
+      "image": "https://onepatch.com/wp-content/uploads/2020/03/LARAVEL_CIRCLES_NEW.gif",
+      "title": "Qual comando utilizado para criar models no Laravel?",
+      "description": "Pergunta de nível básico",
+      "answer": 0,
+      "alternatives": [
+         "./artisan make:model MinhaModel",
+         "./artisan create:model MinhaModel",
+         "./artisan add:model MinhaModel",
+         "./artisan generate:model MinhaModel"
+      ]
+    }
   ],
   "github": "https://github.com/l-mendes",
   "external": [
