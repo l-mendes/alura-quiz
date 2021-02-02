@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import db from '../utils/db.json';
-import Widget from '../components/Widget';
-import Footer from '../components/Footer';
-import QuizBackground from '../components/QuizBackground';
-import GitHubCorner from '../components/GitHubCorner';
-import QuizLogo from '../components/QuizLogo';
-import QuizContainer from '../components/QuizContainer';
-import QuestionWidget from '../components/QuestionWidget';
-import Loader from '../components/Loader';
+import Widget from '../../components/Widget';
+import Footer from '../../components/Footer';
+import QuizBackground from '../../components/QuizBackground';
+import GitHubCorner from '../../components/GitHubCorner';
+import QuizLogo from '../../components/QuizLogo';
+import QuizContainer from '../../components/QuizContainer';
+import QuestionWidget from '../../components/QuestionWidget';
+import Loader from '../../components/Loader';
 
 function LoadingWidget() {
   return (
@@ -65,13 +64,14 @@ const screenStates = {
   RESULT: 'RESULT',
 };
 
-export default function QuizPage() {
+export default function QuizPage({ externalQuestions, externalBg }) {
   const [screenState, setScreenState] = useState(screenStates.LOADING);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [results, setResults] = useState([]);
   const [selectedAlternative, setSelectedAlternative] = useState();
+  const db = externalBg;
 
-  const { questions } = db;
+  const questions = externalQuestions;
   const totalQuestions = questions.length;
   const question = questions[currentQuestion];
 

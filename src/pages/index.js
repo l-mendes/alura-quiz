@@ -55,10 +55,23 @@ export default function Home() {
 
         <Widget>
           <Widget.Header>
-            <h1>Quiz da galera</h1>
+            <h1>Quizes da Galera</h1>
           </Widget.Header>
           <Widget.Content>
-            <p>Lorem ipsum dolor</p>
+            <ul>
+              {db.external.map((linkExterno, index) => {
+                const linkArray = linkExterno.replace('https://', '').split('.');
+                const projeto = linkArray[0];
+                const nome = linkArray[1];
+                return (
+                  <li key={`link_${index + 1}`}>
+                    <Widget.Topic href={`/quiz/${projeto}___${nome}`}>
+                      {`${nome}/${projeto}`}
+                    </Widget.Topic>
+                  </li>
+                );
+              })}
+            </ul>
           </Widget.Content>
         </Widget>
         <Footer />
