@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import db from '../utils/db.json';
 import Widget from '../components/Widget';
@@ -8,6 +9,7 @@ import GitHubCorner from '../components/GitHubCorner';
 import QuizLogo from '../components/QuizLogo';
 import QuizContainer from '../components/QuizContainer';
 import QuestionWidget from '../components/QuestionWidget';
+import Loader from '../components/Loader';
 
 function LoadingWidget() {
   return (
@@ -17,7 +19,41 @@ function LoadingWidget() {
       </Widget.Header>
 
       <Widget.Content>
-        [Desafio do Loading]
+        <Loader />
+      </Widget.Content>
+    </Widget>
+  );
+}
+
+function ResultWidget({ results }) {
+  const router = useRouter();
+  const { name } = router.query;
+  const acertos = results.filter((x) => x).length;
+  const labelCongrats = acertos >= 1 ? `Parabéns ${name}!` : `Que pena ${name}!`;
+  const labelResult = acertos >= 1
+    ? `Você acertou ${acertos} de ${results.length} perguntas`
+    : `Você não acertou nenhuma das ${results.length} perguntas`;
+
+  return (
+    <Widget>
+      <Widget.Header>
+        Resultado:
+      </Widget.Header>
+
+      <Widget.Content>
+        <p>
+          {labelCongrats}
+          <br />
+          {labelResult}
+        </p>
+        <ul>
+          {results.map((result, index) => (
+            <li key={`result_${index + 1}`}>
+              {`Resultado pergunta ${index + 1}: `}
+              {result ? 'Acertou' : 'Errou'}
+            </li>
+          ))}
+        </ul>
       </Widget.Content>
     </Widget>
   );
@@ -32,22 +68,18 @@ const screenStates = {
 export default function QuizPage() {
   const [screenState, setScreenState] = useState(screenStates.LOADING);
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [results, setResults] = useState([]);
   const [selectedAlternative, setSelectedAlternative] = useState();
 
   const { questions } = db;
   const totalQuestions = questions.length;
   const question = questions[currentQuestion];
 
-  const handleAlternativeChange = (e) => {
-
-  };
-
-  const handleQuizSubmit = (e) => {
-    e.preventDefault();
-    const answer = Number(e.target.question.value);
-    if (question.answer === answer) {
-      setCorrectAnswers(correctAnswers + 1);
+  const handleQuizSubmit = () => {
+    if (question.answer === selectedAlternative) {
+      setResults([...results, true]);
+    } else {
+      setResults([...results, false]);
     }
 
     if (currentQuestion === totalQuestions - 1) {
@@ -55,6 +87,10 @@ export default function QuizPage() {
     } else {
       setCurrentQuestion(currentQuestion + 1);
     }
+  };
+
+  const handleSelectedAlternative = (alternative) => {
+    setSelectedAlternative(alternative);
   };
 
   useEffect(() => {
@@ -77,7 +113,8 @@ export default function QuizPage() {
             question={question}
             questionIndex={currentQuestion}
             totalQuestions={totalQuestions}
-            onChangeAlternative={handleAlternativeChange}
+            answer={question.answer}
+            onSelectAlternative={handleSelectedAlternative}
           />
         )}
         {screenState === screenStates.LOADING && (
@@ -85,7 +122,9 @@ export default function QuizPage() {
         )}
 
         {screenState === screenStates.RESULT && (
-          <div>{`Você acertou ${correctAnswers} de ${totalQuestions}!`}</div>
+          <ResultWidget
+            results={results}
+          />
         )}
         <Footer />
       </QuizContainer>

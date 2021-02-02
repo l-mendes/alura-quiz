@@ -1,9 +1,20 @@
+import { useState } from 'react';
 import Widget from '../Widget';
 import Button from '../Button';
+import AlternativesForm from '../AlternativesForm';
 
 export default function QuestionWidget({
-  onSubmit, question, questionIndex, totalQuestions,
+  onSubmit, question, questionIndex, totalQuestions, answer, onSelectAlternative,
 }) {
+  const [selectedAlternative, setSelectedAlternative] = useState();
+  const isCorrect = selectedAlternative === answer;
+  const [isQuestionSubmited, setIsQuestionSubmited] = useState();
+
+  const handleAlternativeChange = (alternative) => {
+    setSelectedAlternative(alternative);
+    onSelectAlternative(alternative);
+  };
+
   return (
     <Widget key={questionIndex + 1}>
       <Widget.Header>
@@ -24,14 +35,27 @@ export default function QuestionWidget({
         <h2>{question.title}</h2>
         <p>{question.description}</p>
 
-        <form onSubmit={onSubmit}>
+        <AlternativesForm onSubmit={(e) => {
+          e.preventDefault();
+          setIsQuestionSubmited(true);
+          setTimeout(() => {
+            setIsQuestionSubmited(false);
+            onSubmit();
+            setSelectedAlternative(undefined);
+          }, 2000);
+        }}
+        >
           {question.alternatives.map((alternative, index) => {
             const alternativeId = `alternative__${index}`;
+            const selectedAlternativeStatus = isQuestionSubmited && isCorrect ? 'SUCCESS' : 'ERROR';
+            const isSelected = selectedAlternative === index;
             return (
               <Widget.Topic
                 key={alternativeId}
                 as="label"
                 htmlFor={alternativeId}
+                data-selected={isSelected}
+                data-status={selectedAlternativeStatus}
               >
                 <input
                   key={alternativeId}
@@ -39,14 +63,17 @@ export default function QuestionWidget({
                   type="radio"
                   name="question"
                   value={index}
+                  onChange={() => handleAlternativeChange(index)}
                 />
                 {alternative}
               </Widget.Topic>
             );
           })}
 
-          <Button type="submit">Confirmar</Button>
-        </form>
+          <Button type="submit" disabled={selectedAlternative === undefined}>Confirmar</Button>
+          {isQuestionSubmited && isCorrect && <p>Você acertou!</p>}
+          {isQuestionSubmited && !isCorrect && <p>Você errou!</p>}
+        </AlternativesForm>
 
       </Widget.Content>
 

@@ -21,6 +21,11 @@ const Button = styled.button`
   &:focus {
     opacity: .6;
   }
+
+  &:disabled {
+    background-color: #ccc;
+    opacity: .6;
+  }
 `;
 
 Button.propTypes = {
